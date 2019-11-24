@@ -9,52 +9,59 @@ from django.urls import reverse
 # 분야
 from django.views.decorators.http import require_POST
 from rest_framework.utils import json
-# path('floor/list/<int:pk>/', views.floor, name='list'),
-# path('floor/ans/<int:pk>/', views.floor_ans, name='ans'),
-# path('floor/ans_all/<int:pk>/', views.ans_all, name='ans_all'),
+
 
 from roll_call.models import *
 from roll_call.tests import *
 #층 전체 리스트
 def floor_list(request):
     context={}
-    floor_list=FloorManager.objects.all()
+    context['floor_lists']=FloorManager.objects.all()
     return render(request, 'roll_call/floor_list.html', context)
 
 def roll_call(request, pk):
     context={}
     context['status']=tests.status
     try:
-        context['students']=Student.objects.filter(floor_num=pk)
+        floor=FloorManager.objects.get(floor_num=pk)
+        students=Student.objects.filter(floor_num=floor)
+        # students_count=students.count()
+        context['students']=Student.objects.filter(floor_num=floor)
+        # print(students.count())
     except:
         context['students'] =''
-    return render(request, 'roll_call/roll_call.html', context)
-    #
-    # if request.method == 'POST':
-    #     category.name = request.POST['name']
-    #     category.sex = request.POST['sex']
-    #     category.cell_phone = request.POST['cell_phone']
-    #     category.test = request.POST['test']
-    #     category.test_num = request.POST['test_num']
-    #     category.jeon_gwan_bool = request.POST['jeon_gwan_bool']
-    #     category.pro_lawyer_bool = request.POST['pro_lawyer_bool']
-    #     category.big_law_firm_bool = request.POST['big_law_firm_bool']
+        print('못받음')
+    if request.method == 'POST':
+        student_status=dict(request.POST)['student_status']
 
-def ans(request, pk):
+        for e in range(len(student_status)):
+            student=students[e]
+            # student.ssn=student.ssn
+            # student.name=student.name
+            student.status=student_status[e]
+            # student.ssn=student.ssn
+            student.save()
+        return HttpResponseRedirect(reverse('roll_call:ans', args=[pk]))
+    return render(request, 'roll_call/roll_call.html', context)
+
+
+def floor_ans(request, pk):
     context={}
     context['status']=tests.status
+    context['pk']=pk
+
     try:
         context['students']=Student.objects.filter(floor_num=pk, status='무단외박')
     except:
         context['students'] =''
-    return render(request, 'roll_call/roll_call.html', context)
+    return render(request, 'roll_call/ans.html', context)
 
-def ans_all(request, pk):
+def ans_all(request):
     context = {}
     context['status'] = tests.status
     try:
         context['students'] = Student.objects.filter(status='무단외박')
     except:
         context['students'] = ''
-    return render(request, 'ans_call/roll_call.html', context)
+    return render(request, 'roll_call/ans_all.html', context)
 

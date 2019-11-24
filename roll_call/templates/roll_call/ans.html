@@ -1,0 +1,39 @@
+{% extends 'roll_call/base.html' %}
+<body>  {% block content %}
+<div class="container" style="padding: 60px">
+<head><h3>
+
+{{ pk }} 층 무단외박자</h3></head>
+        <table class="table table-borderless">
+            <thead>
+            <tr>
+                <th scope="col">방번호</th>
+                <th scope="col">이름</th>
+                <th scope="col">부모님번호</th>
+                <th scope="col">사생 폰번호</th>
+            </tr>
+            </thead>
+            <tbody>
+
+     {%  for student   in students%}
+         <tr scope="row">
+         <td>
+             {{ student.room_num }}
+         </td>
+         <td>
+             {{ student.name }}
+         </td>
+         <td>
+             {{ student.mother_phone }}
+         </td>
+         <td>
+             {{ student.phone }}
+         </td>
+         </tr>
+
+
+{% endfor %}
+     </tbody>
+</table>
+
+</div>{% endblock %}

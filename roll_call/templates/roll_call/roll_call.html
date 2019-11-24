@@ -1,0 +1,59 @@
+{% extends 'roll_call/base.html' %}
+{% block content %}<div class="container" style="padding: 60px">
+<body>
+
+
+
+<div class="row ">
+    <form method="POST" enctype="multipart/form-data" class="form_layout ">
+        {% csrf_token %}
+        <div id="bpp_school">
+            <table class="table" id="school_table">
+                <thead>
+                <tr>
+                    <td><strong>방번호</strong></td>
+
+                    <td><strong>이름</strong></td>
+                    <td><strong>상태</strong></td>
+
+                </tr>
+                </thead>
+                <tbody id="studentTbody">
+                {% for student in students %}
+                    <tr id="trtr_school{{ student.id }}">
+                        <td>
+                            {{ student.room_num }}
+                        </td>
+                        <td>
+                            {{ student.name }}
+                        </td>
+                        <td>
+
+                            <select name="student_status" id="student_status">
+                                <option value="{{ student.staus }}" selected hidden>{{ student.status }}</option>
+                                {% for k in status %}
+                                    <option value="{{ k.0 }}">{{ k.0 }}</option>
+                                {% endfor %}
+
+                            </select>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+    <div class="button">
+         <button class="btn btn-primary btn-large" type="submit">제출</button>
+    </div>
+
+
+    </form>
+
+</div>
+
+
+</body></div>
+ {% endblock%}
